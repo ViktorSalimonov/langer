@@ -2,13 +2,15 @@ from flask import Flask, request
 from queue import Queue
 
 from server.downloadhandler import DownloadHandler
-
+from server.ratelimiter import RateLimiter
 
 app = Flask(__name__)
 
 url_task_queue = Queue()
 
 download_handler = DownloadHandler(url_task_queue)
+rate_limiter = RateLimiter(url_task_queue)
+
 
 
 
