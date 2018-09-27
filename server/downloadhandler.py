@@ -1,28 +1,26 @@
+import re
 import threading
-from queue import Empty
-import requests
 
-from server.task import URLTask
+from server.task import DownloadTask
+
 
 class DownloadHandler(object):
 
-    def __init__(self, task_queue):
-        self.task_queue = task_queue
+    def __init__(self, download_queue):
+        self.download_queue = download_queue
         self.lock = threading.Lock()
 
     def put_url(self, url):
-        if self.url_valid(url) == True:
-            task = URLTask(url)
+        url = url.decode('UTF-8')
+        if self.is_valid(url):
+            task = DownloadTask(url)
             self.lock.acquire()
-            self.task_queue.put(task)
+            self.download_queue.put(task)
             self.lock.release()
-        else:
-            pass
 
-    def url_valid(self, url):
-        try:
-            request = requests.get(url)
-            if request.status_code == requests.codes.ok:
-                return True
-        except:
+    def is_valid(self, url):
+        regex = re.compile('^(?:http)s?://')
+        if re.match(regex, url):
+            return True
+        else:
             return False
