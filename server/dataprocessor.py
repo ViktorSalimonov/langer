@@ -28,6 +28,22 @@ class DataProcessor(threading.Thread):
         return re.compile('\w+').findall(text)
 
 
+    def generate_statistics(self):
+        uniq_pages = self.df['url'].unique()
+        uniq_langs = self.df['lang'].unique()
+        lang_count_pages = self.df.groupby('lang').apply(lambda x: x['url'].nunique())
+        lang_count_words = self.df.groupby('lang').apply(lambda x: x['word'].nunique())
+        word_frequency = self.df['word'].value_counts()
+        result = {
+            "unique pages": uniq_pages.tolist(),
+            "unique languages": uniq_langs.tolist(),
+            "language - pages count": lang_count_pages.to_dict(),
+            "language - unique words count": lang_count_words.to_dict(),
+            "word frequency": word_frequency.to_dict()
+        }
+        return result
+
+
     def run(self):
         while True:
             task = self.get_task()
@@ -41,19 +57,7 @@ class DataProcessor(threading.Thread):
                     stats_entry = [task.url, word, lang, conf]
                     self.df.loc[len(self.df)] = stats_entry
 
-                uniq_pages = self.df['url'].unique()
-                uniq_langs = self.df['lang'].unique()
-                lang_count_pages = self.df.groupby('lang').apply(lambda x: x['url'].nunique())
-                lang_count_words = self.df.groupby('lang').apply(lambda x: x['word'].nunique())
-                word_frequency = self.df['word'].value_counts()
-
-                result = {
-                    "unique pages": uniq_pages.tolist(),
-                    "unique languages": uniq_langs.tolist(),
-                    "language - pages count": lang_count_pages.to_dict(),
-                    "language - unique words count": lang_count_words.to_dict(),
-                    "word frequency": word_frequency.to_dict()
-                }
+                statistics = self.generate_statistics()
 
                 with open("result/statistics.json", "w") as write_file:
-                    json.dump(result, write_file, ensure_ascii=False)
+                    json.dump(statistics, write_file, ensure_ascii=False)
