@@ -40,6 +40,7 @@ class DataProcessor(threading.Thread):
                     lang, conf = self.lang_detection(word)
                     stats_entry = [task.url, word, lang, conf]
                     self.df.loc[len(self.df)] = stats_entry
+
                 uniq_pages = self.df['url'].unique()
                 uniq_langs = self.df['lang'].unique()
                 lang_count_pages = self.df.groupby('lang').apply(lambda x: x['url'].nunique())
@@ -55,4 +56,4 @@ class DataProcessor(threading.Thread):
                 }
 
                 with open("result/statistics.json", "w") as write_file:
-                    json.dump(result, write_file)
+                    json.dump(result, write_file, ensure_ascii=False)
