@@ -5,8 +5,8 @@ class RateLimiter(object):
 
     RATE_LIMIT = 3  # tasks per minute
 
-    def __init__(self, task_queue):
-        self.task_queue = task_queue
+    def __init__(self, download_queue):
+        self.download_queue = download_queue
         self.time_list = []
 
 
@@ -27,7 +27,7 @@ class RateLimiter(object):
 
     def get_task(self):
         if self.__is_allowed():
-            task = self.task_queue.get()
+            task = self.download_queue.get()
             if task is not None:
                 self.time_list.append([self.__now(), task.id])
                 return task
