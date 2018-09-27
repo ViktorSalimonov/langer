@@ -32,13 +32,15 @@ def create_tasks(text):
         global download_handler
         download_handler.put_url(line)
 
-
 @app.route("/result")
-def result():
+@app.route("/result/<key>")
+def result(key=None):
     global data_processor
-    #stats = data_processor.stats
-    #return str(stats)
-
+    stats = data_processor.generate_statistics()
+    if key is not None:
+        return str(stats[key])
+    else:
+        return str(stats)
 
 @app.route("/task", methods=['POST'])
 def put():
