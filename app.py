@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from queue import Queue
 
 from server.dataprocessor import DataProcessor
@@ -37,10 +37,11 @@ def create_tasks(text):
 def result(key=None):
     global data_processor
     stats = data_processor.generate_statistics()
+
     if key is not None:
-        return str(stats[key])
+        return jsonify(stats[key])
     else:
-        return str(stats)
+        return jsonify(stats)
 
 @app.route("/task", methods=['POST'])
 def put():
