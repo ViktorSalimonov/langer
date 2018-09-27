@@ -36,8 +36,8 @@ def create_tasks(text):
 @app.route("/result")
 def result():
     global data_processor
-    stats = data_processor.stats
-    return str(stats)
+    #stats = data_processor.stats
+    #return str(stats)
 
 
 @app.route("/task", methods=['POST'])
