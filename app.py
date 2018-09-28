@@ -32,16 +32,18 @@ def create_tasks(text):
         global download_handler
         download_handler.put_url(line)
 
+
 @app.route("/result")
 @app.route("/result/<key>")
 def result(key=None):
     global data_processor
-    stats = data_processor.generate_statistics()
+    stats = data_processor.return_result()
 
     if key is not None:
         return jsonify(stats[key])
     else:
         return jsonify(stats)
+
 
 @app.route("/task", methods=['POST'])
 def put():
@@ -55,5 +57,5 @@ def index():
     return 'index route'
 
 
-if __name__ == '__main__s':
+if __name__ == '__main__':
     app.run()
