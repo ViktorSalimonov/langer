@@ -37,7 +37,7 @@ def create_tasks(text):
 @app.route("/result/<key>")
 def result(key=None):
     global data_processor
-    stats = data_processor.return_result()
+    stats = data_processor.get_stat()
 
     if key is not None:
         return jsonify(stats[key])
